@@ -7,6 +7,10 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
+
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 /**
  * The following block of code may be used to automatically register your
@@ -27,6 +31,9 @@ Vue.component('post-table', require('./components/PostTable').default);
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+ Vue.use(BootstrapVue);
+ Vue.use(IconsPlugin);
 
 const app = new Vue({
     el: '#app',

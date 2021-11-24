@@ -1,7 +1,8 @@
 <template>
     <div>
-        <div class="flex justify-center">
+        <div class="flex justify-between w-2/4 ml-60">
             <h4 class="text-red-900 text-xl">Posts Table</h4>
+            <button @click="showModal" class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Add Post</button>
         </div>
 
         <div class="flex justify-center">
@@ -24,6 +25,24 @@
               </tbody>
             </table>
         </div>
+
+        <b-modal ref="my-modal" hide-footer title="New Post">
+          <div class="flex flex-nowrap">
+                <label>
+                    Name
+                    <input type="text" v-model="newPost.name" class="border">
+                </label>
+                <label>
+                    Description
+                    <input type="text" v-model="newPost.description" class="border">
+                </label>
+          </div>
+          <div class="flex flex-row-reverse">
+                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" @click="hideModal">Close</button>
+                <button class="bg-green-500 hover:bg-green-700 disabled:bg-red text-white font-bold py-2 px-4 rounded mr-2" 
+                    @click="savePost" :disabled='!newPost.description || !newPost.name' v-bind:class="{'opacity-50': !newPost.description || !newPost.name}">Save Post</button>
+          </div>
+        </b-modal>
     </div>
 </template>
 
@@ -31,7 +50,11 @@
     export default {
         data() {
             return {
-                posts: []
+                posts: [],
+                newPost: {
+                    name: '',
+                    description: ''
+                }
             }
         },
         methods: {
@@ -42,7 +65,23 @@
                     }).catch(error => {
                         console.log(error)
                     })
-            }
+            },
+            savePost() {
+                axios.post('/api/posts', this.newPost)
+                .then(response => {
+                    this.posts.push(response.data.post);
+                    this.hideModal();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            },
+            showModal() {
+                this.$refs['my-modal'].show()
+            },
+            hideModal() {
+                this.$refs['my-modal'].hide()
+            },
         },
         beforeMount() {
             this.getPosts();
